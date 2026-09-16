@@ -87,6 +87,7 @@ _SKIP_FILENAMES = {
     "package-lock.json",
     "yarn.lock",
     "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
     "package.json",
 }
 

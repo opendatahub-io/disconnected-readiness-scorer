@@ -14,7 +14,7 @@ The rule scans `.go`, `.py`, `.yaml`, `.yml`, `.json`, `.toml` files and Dockerf
 | **OCI URI without digest** | `oci://` URI missing `@sha256:` pin | `oci://registry.io/chart:1.0` |
 | **Unqualified k8s image** | `image: name:tag` in YAML `image:` fields | `image: nginx:latest` |
 
-Only git-tracked files are scanned. Files larger than 512 KB are skipped. `package.json` files are excluded to avoid false positives from npm package references. HTTP/HTTPS URLs are not treated as image references.
+Only git-tracked files are scanned. Files larger than 512 KB are skipped. Package-manager metadata files (`package.json`, npm/pnpm lockfiles, and `pnpm-workspace.yaml`) are excluded to avoid false positives from npm package references. HTTP/HTTPS URLs are not treated as image references.
 
 Source code files (`.go`, `.py`, `.sh`) receive an additional annotation noting the image is hardcoded in source, making it harder to update centrally.
 

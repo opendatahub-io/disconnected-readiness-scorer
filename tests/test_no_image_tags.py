@@ -173,6 +173,21 @@ class TestRun:
         assert result.findings == []
         assert result.rule == "no-image-tags"
 
+    def test_skips_pnpm_workspace_configuration(self, tmp_path):
+        workspace = tmp_path / "pnpm-workspace.yaml"
+        workspace.write_text(
+            "packageExtensions:\n"
+            "  '@perses-dev/loki-plugin@0.6.0-rc.2':\n"
+            "    peerDependencies:\n"
+            "      '@mui/material': '^6.1.10'\n"
+        )
+
+        result = run(str(tmp_path))
+
+        assert result.passed is True
+        assert result.findings == []
+        assert "pnpm-workspace.yaml" in result.scan_filters["skip_filenames"]
+
     def test_skips_git_dir(self, tmp_path):
         git_dir = tmp_path / ".git"
         git_dir.mkdir()

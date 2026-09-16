@@ -117,7 +117,7 @@ Non-registry domains are filtered out: `github.com`, `gitlab.com`, `golang.org`,
 | **File** | `rules/no_image_tags.py` |
 | **Entry point** | `run(repo_root, manifest_env_vars=None, production_scope=None, arch_data=None, non_image_prefixes=None, **_kwargs) -> RuleResult` |
 | **Scanned files** | `.go`, `.py`, `.yaml`, `.yml`, `.json`, `.toml` |
-| **Filters** | Git-tracked only; skips `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `package.json`; skips files > 512 KB; skips params.env directories; skips files outside production scope |
+| **Filters** | Git-tracked only; skips package-manager metadata (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package.json`); skips files > 512 KB; skips params.env directories; skips files outside production scope |
 | **External deps** | None |
 
 ### What it does
