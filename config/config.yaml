@@ -517,8 +517,10 @@ exceptions:
   - rules: image-manifest-complete
     repo: feast
     paths:
+      - "infra/feast-operator/api/v1/featurestore_types.go"
       - "infra/feast-operator/internal/controller/services/services_types.go"
-    message: "*RELATED_IMAGE_FEATURE_SERVER*"
+      - "infra/feast-operator/internal/controller/services/util.go"
+    message: "*'RELATED_IMAGE_FEATURE_SERVER'*"
     reason: "RELATED_IMAGE_FEATURE_SERVER is remapped at deploy time by feast-module-operator imageParamMap to RELATED_IMAGE_ODH_FEATURE_SERVER_IMAGE, which is digest-pinned in the opendatahub-operator CSV"
 
   # --- ogx-k8s-operator ---
