@@ -600,6 +600,7 @@ exceptions:
     repo: models-as-a-service
     paths:
       - "deployment/base/maas-api/core/kustomization.yaml"
+      - "deployment/base/maas-discovery/core/kustomization.yaml"
       - "deployment/base/payload-processing/manager/kustomization.yaml"
       - "deployment/base/maas-api/core/cronjob-cleanup.yaml"
     reason: "Kustomize base manifests — images are injected by the controller at runtime via RELATED_IMAGE_* env vars"
