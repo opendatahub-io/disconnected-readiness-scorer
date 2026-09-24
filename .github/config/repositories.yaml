@@ -46,4 +46,7 @@ included_repositories:
   - opendatahub-io/kale
   - opendatahub-io/workbenches-operator
   - opendatahub-io/ai-gateway-controller
+  - opendatahub-io/workbenches
+  - opendatahub-io/odh-ide-extensions
+  - opendatahub-io/elyra
   # - opendatahub-io/opendatahub-tests
