@@ -14,6 +14,8 @@
 
 included_repositories:
   - opendatahub-io/odh-dashboard
+  - opendatahub-io/openshell
+  - opendatahub-io/openshell-dashboard
   - opendatahub-io/kubeflow
   - opendatahub-io/notebooks
   - opendatahub-io/kserve
