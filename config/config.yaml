@@ -354,6 +354,33 @@ exceptions:
     message: "*ubi-micro*"
     reason: "Modelcar init container default — tag is replaced by digest-pinned image via RELATED_IMAGE_* injection at runtime. The image-manifest-complete blocker for this line is tracked separately for a code fix in kserve"
 
+  # Upstream-only KServe KernelCache defaults — the upstream KernelCache feature
+  # and its default images are not shipped or deployed in ODH/RHOAI.
+  - rules:
+      - image-manifest-complete
+      - no-image-tags
+    repo: kserve
+    paths:
+      - "config/kernelcachenodes/kernelcachenode_agent_image_patch.yaml"
+      - "config/overlays/development/kernelcachenode_image_patch.yaml"
+    images:
+      - "kserve/kserve-kernelcachenode-agent:latest"
+    reason: "Upstream KServe KernelCache node-agent default — the upstream KernelCache feature and its default image are not shipped or deployed in ODH/RHOAI"
+
+  # KernelCache defaults are upstream-only product defaults. The upstream
+  # KernelCache feature and its default images are not shipped or deployed in
+  # ODH/RHOAI.
+  - rules:
+      - image-manifest-complete
+      - no-image-tags
+    repo: kserve
+    paths:
+      - "pkg/apis/serving/v1beta1/configmap.go"
+    images:
+      - "kserve/kserve-mcv:latest-minimal"
+      - "registry.access.redhat.com/ubi9/ubi-minimal:latest"
+    reason: "Upstream KServe KernelCache default images — the upstream KernelCache feature and its default images are not shipped or deployed in ODH/RHOAI"
+
   # kserve-module operator controller image — injected by the platform operator, not params.env
   - rules: params-env-wiring
     repo: kserve
