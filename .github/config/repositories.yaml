@@ -40,6 +40,10 @@ included_repositories:
   - opendatahub-io/llama-stack-provider-trustyai-garak
   - opendatahub-io/eval-hub
   - opendatahub-io/batch-gateway
+  - opendatahub-io/llm-d-async
+  - opendatahub-io/llm-d-batch-gateway-operator
+  - opendatahub-io/llm-d-router
+  - opendatahub-io/rhaii-cluster-validation
   - opendatahub-io/odh-observability
   - opendatahub-io/rhoai-mcp
   - opendatahub-io/rhoai-observability-mcp
