@@ -72,6 +72,11 @@ IMAGE_REF_PATTERN = re.compile(
 K8S_UNQUALIFIED_IMAGE = re.compile(
     r"""(?:^|[\s\-])image:\s*['"]?([a-zA-Z][\w.\-]+):([\w.\-]+)['"]?\s*$"""
 )
+# A Docker Registry / Quay Bearer authorization scope, as requested from the
+# registry's /v2/auth endpoint: ``repository:<name>:<actions>`` where actions
+# are pull/push (comma-separated). It is not an image reference -- the operand
+# image is pinned separately -- so it must not be flagged as a tagged image.
+REGISTRY_AUTH_SCOPE_ACTIONS = re.compile(r"^(?:pull|push)(?:,(?:pull|push))*$")
 
 YAML_EXTENSIONS = {".yaml", ".yml"}
 
@@ -94,6 +99,23 @@ _SKIP_FILENAMES = {
     "pnpm-workspace.yaml",
     "package.json",
 }
+
+
+def _is_registry_auth_scope(line: str, match: re.Match, repo_part: str, ref_part: str | None) -> bool:
+    """True when the match is the tail of a ``repository:<name>:<actions>`` scope.
+
+    The scope string is not an image reference: the updater requests it from the
+    registry's ``/v2/auth`` endpoint on an anonymous 401 challenge, and the operand
+    image it belongs to is digest-pinned elsewhere. Only exact scope grammar
+    (pull/push actions) is excluded; anything else keeps being flagged.
+    """
+    before = line[: match.start()]
+    if not before.endswith("repository:"):
+        return False
+    if len(before) > 11 and before[-12].isalnum():
+        return False  # e.g. "myrepository:" -- not a scope prefix
+    actions = ref_part[1:] if ref_part else ""
+    return REGISTRY_AUTH_SCOPE_ACTIONS.fullmatch(actions) is not None
 
 
 def _is_sha256_pinned(ref_part: str | None, digest_part: str | None) -> bool:
@@ -199,6 +221,9 @@ def scan_file(
             repo_part = match.group(2)
             ref_part = match.group(3)
             digest_part = match.group(4)
+
+            if _is_registry_auth_scope(line, match, repo_part, ref_part):
+                continue
 
             if prefix.startswith("http"):
                 continue

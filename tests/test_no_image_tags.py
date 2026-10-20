@@ -1174,3 +1174,45 @@ class TestDocumentationFieldKnownLimitation:
         findings = scan_file(f, tmp_path)
         by_image = {finding.image: finding for finding in findings}
         assert by_image["quay.io/org/real:v2"].severity == "info"
+
+
+class TestRegistryAuthScopes:
+    """A `repository:<name>:<actions>` Bearer scope is not an image reference."""
+
+    def test_go_bearer_scope_literal_not_flagged(self, tmp_path):
+        f = tmp_path / "image.go"
+        f.write_text(
+            'expectedScope := "repository:opendatahub/odh-mcp-lifecycle-operator:pull"\n'
+        )
+        assert scan_file(f, tmp_path) == []
+
+    def test_pull_push_scope_not_flagged(self, tmp_path):
+        f = tmp_path / "image.go"
+        f.write_text('scope := "repository:example.com/org/app:pull,push"\n')
+        assert scan_file(f, tmp_path) == []
+
+    def test_scope_prefix_inside_a_longer_word_is_still_flagged(self, tmp_path):
+        f = tmp_path / "image.go"
+        f.write_text('x := "myrepository:org/img:pull"\n')
+        findings = scan_file(f, tmp_path)
+        assert any(fd.image == "org/img:pull" for fd in findings)
+
+    def test_real_image_on_the_same_line_still_flagged(self, tmp_path):
+        f = tmp_path / "image.go"
+        f.write_text(
+            'expectedScope := "repository:org/img:pull"; img := "quay.io/org/img:v1"\n'
+        )
+        findings = scan_file(f, tmp_path)
+        assert any(fd.image == "quay.io/org/img:v1" for fd in findings)
+        assert not any(fd.image == "org/img:pull" for fd in findings)
+
+    def test_unknown_actions_still_flagged(self, tmp_path):
+        f = tmp_path / "image.go"
+        f.write_text('x := "repository:org/img:v1.0"\n')
+        findings = scan_file(f, tmp_path)
+        assert any("org/img:v1.0" in fd.image for fd in findings)
+
+    def test_python_scope_literal_not_flagged(self, tmp_path):
+        f = tmp_path / "source_update.py"
+        f.write_text('expected_scope = "repository:org/img:pull"\n')
+        assert scan_file(f, tmp_path) == []
