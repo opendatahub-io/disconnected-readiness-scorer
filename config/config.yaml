@@ -926,3 +926,13 @@ exceptions:
       - "odh-jupyter-trash-cleanup/setup.py"
     message: "*Runtime pip install detected*"
     reason: "Jupyter copier setup.py stub exits with instructional text that contains the words 'pip install'. The file does not invoke pip at runtime or install time."
+
+  # --- openshell-dashboard ---
+  - rules: no-image-tags
+    repo: openshell-dashboard
+    paths:
+      - "frontend/cypress/fixtures/sandboxes.json"
+    images:
+      - "ghcr.io/nvidia/openshell-community/sandboxes/base:latest"
+    reason: "Cypress API-intercept fixture — test data, not a production workload reference"
+    reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
