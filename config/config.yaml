@@ -670,7 +670,12 @@ exceptions:
   # (no repo-specific exceptions)
 
   # --- ogx-distribution ---
-  # (no repo-specific exceptions)
+  - rules: python-imports-bundled
+    repo: ogx-distribution
+    paths:
+      - "distribution/requirements-lock.txt"
+    message: "*git+https*"
+    reason: "Build-time only: requirements-lock.txt is consumed by 'uv pip sync' inside the Containerfile during image builds, and not included at runtime on customer clusters"
 
 
   # --- trainer ---
