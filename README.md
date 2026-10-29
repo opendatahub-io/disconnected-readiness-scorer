@@ -183,7 +183,7 @@ A missing config file — whether the default path or an explicitly passed `--co
 
 ### Configuration
 
-All configuration is managed centrally in `config/config.yaml`. No per-repository configuration files are supported — repo-specific exceptions use the `repo` field in the central config.
+All configuration is managed centrally in `config/config.yaml`. No per-repository configuration files are supported — repo-specific exceptions use the `repo` field in the central config. For a semantic false positive, constrain every applicable dimension: `repo`, rule, path, and exact image/message glob. Do not except an entire file when it can also contain a real runtime finding; unused exceptions are reported so stale entries remain visible.
 
 ## Reporting False Positives
 

@@ -222,6 +222,28 @@ exceptions:
     reason: "Local Docker-backed E2E image; the task builds it locally and uses image pull policy never"
     reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
 
+  # Semantic test identifiers: keep this image-constrained so a real tagged
+  # image in the gate configuration remains a blocker.
+  - rules: no-image-tags
+    repo: openshell
+    paths:
+      - "odh/python-gates.toml"
+    images:
+      - "e2e/python/*.py::*"
+    reason: "Exact pytest node IDs used by the downstream Python E2E gate plugin; strict collection validates every entry against the upstream test inventory"
+    reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
+
+  # Helm values are intentionally colon-delimited by the Kubernetes E2E task.
+  # Scope the pattern to its task syntax rather than excepting tasks/test.toml.
+  - rules: no-image-tags
+    repo: openshell
+    paths:
+      - "tasks/test.toml"
+    images:
+      - "deploy/helm/openshell/ci/values-*.yaml:deploy"
+    reason: "Colon-delimited Helm values consumed by Kubernetes E2E tasks, not container image references"
+    reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
+
   - rules: no-image-tags
     repo: openshell
     paths:

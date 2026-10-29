@@ -1190,6 +1190,37 @@ class TestApplyExceptions:
         apply_exceptions(results, exceptions, "repo")
         assert results[0].findings[0].severity == "blocker"
 
+    @pytest.mark.parametrize(
+        ("path", "image", "expected_severity"),
+        [
+            ("odh/python-gates.toml", "e2e/python/test_api.py::test_crud", "info"),
+            ("odh/python-gates.toml", "quay.io/openshell/runtime:latest", "blocker"),
+            ("tasks/test.toml", "deploy/helm/openshell/ci/values-supervisor.yaml:deploy", "info"),
+            ("tasks/test.toml", "openshell/e2e-python:dev", "blocker"),
+        ],
+    )
+    def test_openshell_semantic_test_identifier_exceptions_remain_image_constrained(
+        self, path, image, expected_severity
+    ):
+        config_path = Path(__file__).parents[1] / "config" / "config.yaml"
+        exceptions = [
+            exc
+            for exc in load_exceptions(config_path)
+            if exc.get("repo") == "openshell"
+            and exc.get("paths") in (["odh/python-gates.toml"], ["tasks/test.toml"])
+            and exc.get("images")
+            in (["e2e/python/*.py::*"], ["deploy/helm/openshell/ci/values-*.yaml:deploy"])
+        ]
+        assert len(exceptions) == 2
+
+        results = [
+            RuleResult("no-image-tags", False, [Finding("blocker", path, 1, image, "tagged")])
+        ]
+
+        apply_exceptions(results, exceptions, "opendatahub-io/openshell")
+
+        assert results[0].findings[0].severity == expected_severity
+
     def test_test_yaml_file_pattern(self):
         results = [
             RuleResult(
