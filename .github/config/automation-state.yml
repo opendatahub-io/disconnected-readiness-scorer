@@ -1,9 +1,9 @@
 organizations:
   opendatahub-io:
-    repo_count: 235
-    last_check: '2026-10-13T18:21:01.319227'
+    repo_count: 232
+    last_check: '2026-11-02T10:57:12.080519'
     last_full_scan: '2026-07-07T16:14:08Z'
 template_state:
   workflow_yml_hash: 603d1d5d989d
   last_template_update: '2026-07-07T16:14:08Z'
-last_updated: '2026-10-13T18:21:01.319237'
+last_updated: '2026-11-02T10:57:12.080523'
