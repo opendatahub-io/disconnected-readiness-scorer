@@ -195,6 +195,16 @@ exceptions:
     reason: "Upstream Kubeflow model-registry code — async-upload image is mitigated by existing operator configuration, busybox image is unreachable in the disconnected scenario it protects against"
     reference: "https://issues.redhat.com/browse/RHOAIENG-69988"
 
+  # Example image in a Model Registry BFF validation response. It helps users
+  # supply a registry-qualified value and is never used to create a workload.
+  - rules: no-image-tags
+    repo: odh-dashboard
+    paths:
+      - "packages/model-registry/upstream/bff/internal/repositories/model_transfer_jobs.go"
+    images:
+      - "mirror.example.com/library/busybox:*"
+    reason: "User-facing validation-message example, not a runtime image reference"
+
   - rules:
       - image-manifest-complete
       - no-image-tags
