@@ -1196,6 +1196,11 @@ class TestApplyExceptions:
             ("odh/python-gates.toml", "e2e/python/test_api.py::test_crud", "info"),
             ("odh/python-gates.toml", "quay.io/openshell/runtime:latest", "blocker"),
             ("tasks/test.toml", "deploy/helm/openshell/ci/values-supervisor.yaml:deploy", "info"),
+            (
+                "tasks/test.toml",
+                "helm/openshell/ci/values-supervisor-ha.yaml:deploy",
+                "info",
+            ),
             ("tasks/test.toml", "openshell/e2e-python:dev", "blocker"),
         ],
     )
@@ -1209,7 +1214,13 @@ class TestApplyExceptions:
             if exc.get("repo") == "openshell"
             and exc.get("paths") in (["odh/python-gates.toml"], ["tasks/test.toml"])
             and exc.get("images")
-            in (["e2e/python/*.py::*"], ["deploy/helm/openshell/ci/values-*.yaml:deploy"])
+            in (
+                ["e2e/python/*.py::*"],
+                [
+                    "deploy/helm/openshell/ci/values-*.yaml:deploy",
+                    "helm/openshell/ci/values-*.yaml:deploy",
+                ],
+            )
         ]
         assert len(exceptions) == 2
 

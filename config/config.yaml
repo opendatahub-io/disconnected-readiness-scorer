@@ -245,12 +245,15 @@ exceptions:
 
   # Helm values are intentionally colon-delimited by the Kubernetes E2E task.
   # Scope the pattern to its task syntax rather than excepting tasks/test.toml.
+  # A three-file list leaves a leftover helm/openshell/...yaml:deploy match
+  # after the first path.yaml:deploy/ prefix is consumed.
   - rules: no-image-tags
     repo: openshell
     paths:
       - "tasks/test.toml"
     images:
       - "deploy/helm/openshell/ci/values-*.yaml:deploy"
+      - "helm/openshell/ci/values-*.yaml:deploy"
     reason: "Colon-delimited Helm values consumed by Kubernetes E2E tasks, not container image references"
     reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
 
