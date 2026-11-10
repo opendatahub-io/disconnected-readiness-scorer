@@ -254,6 +254,17 @@ exceptions:
     reason: "Colon-delimited Helm values consumed by Kubernetes E2E tasks, not container image references"
     reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
 
+  # A three-file overlay list leaves this truncated form after the scorer
+  # consumes the first `path.yaml:deploy/` prefix.
+  - rules: no-image-tags
+    repo: openshell
+    paths:
+      - "tasks/test.toml"
+    images:
+      - "helm/openshell/ci/values-*.yaml:deploy"
+    reason: "Truncated colon-delimited Helm value path from a Kubernetes E2E task, not a container image reference"
+    reference: "https://issues.redhat.com/browse/RHOAIENG-94493"
+
   - rules: no-image-tags
     repo: openshell
     paths:
