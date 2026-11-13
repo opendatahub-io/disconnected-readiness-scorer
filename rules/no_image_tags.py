@@ -95,6 +95,40 @@ _SKIP_FILENAMES = {
     "package.json",
 }
 
+# Last path segment of a source/config file, not an image repository name.
+_NON_IMAGE_SUFFIXES = frozenset(
+    {
+        ".c",
+        ".go",
+        ".h",
+        ".js",
+        ".json",
+        ".jsx",
+        ".md",
+        ".py",
+        ".rs",
+        ".sh",
+        ".toml",
+        ".ts",
+        ".tsx",
+        ".yaml",
+        ".yml",
+    }
+)
+
+
+def _is_non_image_ref(repo_part: str, ref_part: str | None) -> bool:
+    """True when the match cannot be an OCI image name plus tag."""
+    parts = repo_part.split("/")
+    if any(part in {".", ".."} for part in parts):
+        return True
+    last = parts[-1]
+    dot = last.rfind(".")
+    if dot > 0 and last[dot:].lower() in _NON_IMAGE_SUFFIXES:
+        return True
+    # OCI tags cannot contain ':'. Extra colons are line:col or pytest '::'.
+    return bool(ref_part and ref_part.startswith(":") and ":" in ref_part[1:])
+
 
 def _is_sha256_pinned(ref_part: str | None, digest_part: str | None) -> bool:
     """True when the reference is pinned with ``@sha256:``.
@@ -214,6 +248,8 @@ def scan_file(
                 if "/" not in repo_part:
                     continue
                 if any(len(p) <= 1 for p in repo_part.split("/")):
+                    continue
+                if _is_non_image_ref(repo_part, ref_part):
                     continue
                 domain = repo_part.split("/")[0].split(":")[0]
                 if domain in NON_REGISTRY_DOMAINS:

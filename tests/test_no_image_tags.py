@@ -1174,3 +1174,28 @@ class TestDocumentationFieldKnownLimitation:
         findings = scan_file(f, tmp_path)
         by_image = {finding.image: finding for finding in findings}
         assert by_image["quay.io/org/real:v2"].severity == "info"
+
+
+class TestNonImagePathRefs:
+    """Source locations and pytest node IDs are not container image references."""
+
+    def test_python_source_location_not_flagged(self, tmp_path):
+        f = tmp_path / "label_issue_evidence_test.py"
+        f.write_text('expand_evidence(snapshot, ["source:src/example.py:2:3"], api=self.api)\n')
+        assert scan_file(f, tmp_path) == []
+
+    def test_relative_path_source_location_not_flagged(self, tmp_path):
+        f = tmp_path / "label_issue_evidence_test.py"
+        f.write_text('expand_evidence(snapshot, ["source:../secret:1:2"], api=self.api)\n')
+        assert scan_file(f, tmp_path) == []
+
+    def test_pytest_node_id_not_flagged(self, tmp_path):
+        f = tmp_path / "gates.toml"
+        f.write_text('id = "e2e/python/test_sandbox.py::test_pip_install_in_sandbox"\n')
+        assert scan_file(f, tmp_path) == []
+
+    def test_real_tagged_image_still_flagged(self, tmp_path):
+        f = tmp_path / "app.py"
+        f.write_text('image = "quay.io/org/app:v1.2.3"\n')
+        findings = scan_file(f, tmp_path)
+        assert any(fd.image == "quay.io/org/app:v1.2.3" for fd in findings)
