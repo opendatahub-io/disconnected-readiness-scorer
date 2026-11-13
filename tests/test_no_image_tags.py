@@ -1181,23 +1181,17 @@ class TestNonImagePathRefs:
 
     def test_python_source_location_not_flagged(self, tmp_path):
         f = tmp_path / "label_issue_evidence_test.py"
-        f.write_text(
-            'expand_evidence(snapshot, ["source:src/example.py:2:3"], api=self.api)\n'
-        )
+        f.write_text('expand_evidence(snapshot, ["source:src/example.py:2:3"], api=self.api)\n')
         assert scan_file(f, tmp_path) == []
 
     def test_relative_path_source_location_not_flagged(self, tmp_path):
         f = tmp_path / "label_issue_evidence_test.py"
-        f.write_text(
-            'expand_evidence(snapshot, ["source:../secret:1:2"], api=self.api)\n'
-        )
+        f.write_text('expand_evidence(snapshot, ["source:../secret:1:2"], api=self.api)\n')
         assert scan_file(f, tmp_path) == []
 
     def test_pytest_node_id_not_flagged(self, tmp_path):
         f = tmp_path / "gates.toml"
-        f.write_text(
-            'id = "e2e/python/test_sandbox.py::test_pip_install_in_sandbox"\n'
-        )
+        f.write_text('id = "e2e/python/test_sandbox.py::test_pip_install_in_sandbox"\n')
         assert scan_file(f, tmp_path) == []
 
     def test_real_tagged_image_still_flagged(self, tmp_path):
