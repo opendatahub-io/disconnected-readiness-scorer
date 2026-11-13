@@ -96,10 +96,25 @@ _SKIP_FILENAMES = {
 }
 
 # Last path segment of a source/config file, not an image repository name.
-_NON_IMAGE_SUFFIXES = frozenset({
-    ".c", ".go", ".h", ".js", ".json", ".jsx", ".md", ".py", ".rs",
-    ".sh", ".toml", ".ts", ".tsx", ".yaml", ".yml",
-})
+_NON_IMAGE_SUFFIXES = frozenset(
+    {
+        ".c",
+        ".go",
+        ".h",
+        ".js",
+        ".json",
+        ".jsx",
+        ".md",
+        ".py",
+        ".rs",
+        ".sh",
+        ".toml",
+        ".ts",
+        ".tsx",
+        ".yaml",
+        ".yml",
+    }
+)
 
 
 def _is_non_image_ref(repo_part: str, ref_part: str | None) -> bool:
