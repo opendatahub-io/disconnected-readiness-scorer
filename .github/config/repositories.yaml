@@ -57,3 +57,4 @@ included_repositories:
   - opendatahub-io/elyra
   # - opendatahub-io/opendatahub-tests
   - opendatahub-io/ogx-distribution
+  - opendatahub-io/opendatahub-db-operator
