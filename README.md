@@ -185,6 +185,8 @@ A missing config file — whether the default path or an explicitly passed `--co
 
 All configuration is managed centrally in `config/config.yaml`. No per-repository configuration files are supported — repo-specific exceptions use the `repo` field in the central config. For a semantic false positive, constrain every applicable dimension: `repo`, rule, path, and exact image/message glob. Do not except an entire file when it can also contain a real runtime finding; unused exceptions are reported so stale entries remain visible.
 
+An image supplied exclusively by the RHAI xKS Helm payload, rather than the conventional ODH/RHOAI operator manifest, is a semantic false positive for the operator-manifest cross-reference. Scope its exception to the repository, `image-manifest-complete`, and the exact `RELATED_IMAGE_*` variable message; document the payload that mirrors and injects it.
+
 ## Reporting False Positives
 
 When the scanner flags something that is not a real disconnected issue, add an exception to unblock your PR.

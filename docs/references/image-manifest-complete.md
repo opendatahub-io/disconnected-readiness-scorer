@@ -79,6 +79,8 @@ For any of the above, the full disconnected wiring chain also requires entries i
 
 Build-time-only images (e.g. in Dockerfiles or CI scripts that never run on-cluster), images behind disabled feature gates, and files outside production scope are common false positives. If a file is not already auto-excepted, add a path exception in [config/config.yaml](https://github.com/opendatahub-io/disconnected-readiness-scorer/blob/main/config/config.yaml).
 
+An image supplied exclusively by the RHAI xKS Helm payload is not part of the conventional ODH/RHOAI operator manifest. For this case, add a narrowly scoped `image-manifest-complete` exception using the exact `RELATED_IMAGE_*` variable in the finding message, the target repository, and a reference documenting the xKS payload that mirrors and injects the image. Do not add the image to the traditional operator manifest solely to satisfy this check.
+
 ## References
 
 - [Disconnected install helper](https://github.com/opendatahub-io/opendatahub-operator/blob/main/docs/disconnected.md)
