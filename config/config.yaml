@@ -222,6 +222,15 @@ exceptions:
       - "manifests/rhoai/apps/pachyderm/pachyderm-app.yaml"
     reason: "curl commands live inside OdhQuickStart/OdhApplication documentation fields shown in the dashboard UI — instructional text, not egress executed by the manifest"
 
+  # The RHAII dashboard is deployed only through the xKS Helm payload. Its
+  # image is mirrored and injected there, not through the conventional
+  # opendatahub-operator manifest used by this cross-reference.
+  - rules: image-manifest-complete
+    repo: odh-dashboard
+    message: "*Env var 'RELATED_IMAGE_ODH_RHAII_DASHBOARD_IMAGE' found in repo but not in operator manifest.*"
+    reason: "RHAII dashboard image is supplied by the xKS Helm payload, not the traditional ODH/RHOAI operator manifest"
+    reference: "https://github.com/opendatahub-io/odh-dashboard/pull/10199"
+
   # --- openshell ---
   - rules: no-image-tags
     repo: openshell

@@ -1128,6 +1128,48 @@ class TestApplyExceptions:
         apply_exceptions(results, exceptions, "repo")
         assert results[0].findings[0].severity == "blocker"
 
+    def test_odh_dashboard_xks_image_exception_is_limited_to_its_variable(self):
+        config_path = Path(__file__).parents[1] / "config" / "config.yaml"
+        exceptions = [
+            exc
+            for exc in load_exceptions(config_path)
+            if exc.get("repo") == "odh-dashboard"
+            and exc.get("message")
+            == "*Env var 'RELATED_IMAGE_ODH_RHAII_DASHBOARD_IMAGE' found in repo but not in operator manifest.*"
+        ]
+        assert len(exceptions) == 1
+
+        results = [
+            RuleResult(
+                rule="image-manifest-complete",
+                passed=False,
+                findings=[
+                    Finding(
+                        "blocker",
+                        "dashboard-operator/internal/controller/support.go",
+                        29,
+                        "",
+                        "Env var 'RELATED_IMAGE_ODH_RHAII_DASHBOARD_IMAGE' found in repo but not in operator manifest. "
+                        "Operator will not inject this image in disconnected environments.",
+                    ),
+                    Finding(
+                        "blocker",
+                        "dashboard-operator/internal/controller/support.go",
+                        30,
+                        "",
+                        "Env var 'RELATED_IMAGE_ODH_RHAII_DASHBOARD_IMAGE_OTHER' found in repo but not in operator manifest. "
+                        "Operator will not inject this image in disconnected environments.",
+                    ),
+                ],
+            )
+        ]
+
+        apply_exceptions(results, exceptions, "opendatahub-io/odh-dashboard")
+
+        assert results[0].findings[0].severity == "info"
+        assert results[0].findings[1].severity == "blocker"
+        assert results[0].passed is False
+
     def test_images_list_matches(self):
         results = [
             RuleResult(
